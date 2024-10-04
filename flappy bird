@@ -1,0 +1,48 @@
+import pygame
+
+WIDTH=864
+HEIGHT=800
+TITLE="flappy bird"
+run=True
+x=0
+pygame.init()
+birdg=pygame.image.load("birdg.png")
+ground=pygame.image.load("ground.png")
+bird1=pygame.image.load("bird1.png")
+bird2=pygame.image.load("bird2.png")
+bird3=pygame.image.load("bird3.png")
+pipe=pygame.image.load("pipe.png")
+screen=pygame.display.set_mode((WIDTH,HEIGHT))
+pygame.display.set_caption(TITLE)
+
+class Bird(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        super().__init__()
+        self.images=[bird1,bird2,bird3]
+        self.index=0
+        self.image=self.images[self.index]
+        self.rect=self.image.get_rect()
+        self.rect.x=x
+        self.rect.y=y
+
+    def update(self):
+        self.image=self.images[self.index]
+        self.index=self.index+1
+
+bird=Bird(150,400)
+gob=pygame.sprite.Group()
+gob.add(bird)
+while run:
+    screen.blit(birdg,(0,0))
+    gob.draw(screen)
+    screen.blit(ground,(x,700))
+    bird.update()
+
+    x=x-0.5
+    if x<-36:
+        x=0
+
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            run=False
+    pygame.display.update()
