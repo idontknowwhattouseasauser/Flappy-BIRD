@@ -54,15 +54,19 @@ class Bird(pygame.sprite.Sprite):
                     self.index = 0
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self,x,y,p):
         super().__init__()
         self.image=pipe
         self.rect=self.image.get_rect()
-        self.rect.x=x
-        self.rect.y=y
+        if p==1:
+            self.image=pygame.transform.flip(self.image,False,True)
+            self.rect.bottomleft=(x,y)
+        else:
+            self.rect.topleft=(x,y)
     def update(self):
-        self.rect.x=self.rect.x-1   
-
+        self.rect.x=self.rect.x-2  
+        if self.rect.right<0:
+            self.kill()
 gop=pygame.sprite.Group()
 
 bird = Bird(150, 400)
@@ -77,11 +81,12 @@ while run:
     bird.update()
     if flying==True and gameover==False:
         timenow=pygame.time.get_ticks()
-        pipe1=Pipe(864,600)
-        pipe2=Pipe(864,200)
-        gop.add(pipe1)
-        gop.add(pipe2)
-        lastpipe=timenow
+        if timenow-lastpipe>3000:
+            pipe1=Pipe(864,600,0)
+            pipe2=Pipe(864,200,1)
+            gop.add(pipe1)
+            gop.add(pipe2)
+            lastpipe=timenow
     if flying==True:
         x -= 0.5
         if x < -36:
